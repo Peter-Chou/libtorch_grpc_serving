@@ -11,5 +11,5 @@ message ImageMatrix {
 }
 
 message ClassifyResult {
-  int32 result = 1;
+  float result = 1;
 }
