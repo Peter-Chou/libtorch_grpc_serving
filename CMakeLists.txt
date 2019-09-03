@@ -19,6 +19,7 @@ find_package(gRPC CONFIG REQUIRED)
 message(STATUS "Using gRPC ${gRPC_VERSION}")
 
 find_package(Torch REQUIRED)
+message(STATUS "Torch libraries: ${TORCH_LIBRARIES}")
 
 set(_GRPC_GRPCPP_UNSECURE gRPC::grpc++_unsecure)
 set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
@@ -26,7 +27,3 @@ set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
 include_directories("${PROTO_GENERATED_FILES_DIR}")
 
 add_subdirectory(src)
-
-# add_executable(example-app example-app.cpp)
-# target_link_libraries(example-app "${TORCH_LIBRARIES}")
-# set_property(TARGET example-app PROPERTY CXX_STANDARD 11)
