@@ -1,5 +1,3 @@
-#include <torch/script.h> // One-stop header.
-
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -7,6 +5,7 @@
 
 #include <grpcpp/grpcpp.h>
 #include "example.grpc.pb.h"
+#include "resnet.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -17,8 +16,7 @@ using example::ImageMatrix;
 using example::ClassifyResult;
 using example::ResNet;
 
-// std::shared_ptr<torch::jit::script::Module> module = torch::jit::load("/home/peter/pytorch_libtorch/traced_resnet_model.pt");
-torch::jit::script::Module module = torch::jit::load("/home/peter/pytorch_libtorch/traced_resnet_model.pt");
+ResNetModule resnet(std::string("/home/peter/libtorch_grpc_demo/traced_resnet_model.pt"));
 
 class ResNetServiceImpl : public ResNet::Service {
   Status ClassifyImage (ServerContext* context, const ImageMatrix* image,
@@ -27,13 +25,7 @@ class ResNetServiceImpl : public ResNet::Service {
     for (int i = 0; i < image->image_matrix_size(); ++i) {
       temp.push_back(image->image_matrix(i)); 
     }
-    torch::Tensor tensor_image = torch::from_blob(temp.data(), {1, 3, 224, 224}, torch::kInt32);
-    // Create a vector of inputs.
-    std::vector<torch::jit::IValue> inputs;
-    inputs.push_back(tensor_image);
-
-    auto output = ::module.forward(inputs).toTensor();
-    std::cout << output.slice(/*dim=*/1, /*start=*/0, /*end=*/5) << '\n';
+    resnet.classify(temp);
     return Status::OK;
   }
 };
