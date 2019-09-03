@@ -48,3 +48,4 @@ _deps
 
 ### custom ignore
 *.pt
+build/
