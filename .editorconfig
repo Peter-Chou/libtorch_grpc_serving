@@ -1,0 +1,50 @@
+
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# general
+[*]
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# c/c++, python
+[*.{h,hh,hpp,c,cc,cpp,py}]
+indent_style = space
+indent_size = 2
+
+# python 
+[*.py]
+indent_style = space
+indent_size = 2
+
+[*.java]
+indent_style = space
+indent_size = 2
+
+# javascript
+[*.js]
+indent_style = space
+indent_size = 2
+
+[*.{json,y{a,}ml}]
+indent_style = space
+indent_size = 4
+
+# markdown, txt
+[*.{md,txt}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+
+# Makefile build
+[Makefile]
+indent_style = tab
+
+# proto buffer
+[*.proto]
+indent_style = space
+indent_size = 2

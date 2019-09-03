@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package example;
+
+service ResNet {
+  rpc ClassifyImage (ImageMatrix) returns (ClassifyResult) {}
+}
+
+message ImageMatrix {
+  repeated int32 image_matrix = 1;
+}
+
+message ClassifyResult {
+  int32 result = 1;
+}
