@@ -20,12 +20,13 @@ ResNetModule resnet(std::string("/home/peter/libtorch_grpc_demo/traced_resnet_mo
 
 class ResNetServiceImpl : public ResNet::Service {
   Status ClassifyImage (ServerContext* context, const ImageMatrix* image,
-                         ClassifyResult* result) override {
+                         ClassifyResult* res) override {
     std::vector<int> temp;
     for (int i = 0; i < image->image_matrix_size(); ++i) {
       temp.push_back(image->image_matrix(i)); 
     }
-    resnet.classify(temp);
+    auto classify_result = resnet.classify(temp);
+    res->set_result(classify_result);
     return Status::OK;
   }
 };

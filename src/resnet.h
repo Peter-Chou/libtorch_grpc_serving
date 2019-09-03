@@ -12,7 +12,7 @@ class ResNetModule : public torch::jit::script::Module {
   ResNetModule(const std::string& model_path) {
     _module = torch::jit::load(model_path);
   }
-  void classify(std::vector<int>& vec);
+  float classify(std::vector<int>& vec);
  private:
   torch::jit::script::Module _module;
 };
