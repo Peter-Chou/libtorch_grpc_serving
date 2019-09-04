@@ -9,7 +9,6 @@ float ResNetModule::classify(std::vector<int>& vec) {
   inputs.push_back(tensor_image);
 
   auto output = _module.forward(inputs).toTensor();
-  std::cout << output.slice(/*dim=*/1, /*start=*/0, /*end=*/5) << '\n';
 
   auto max_result = output.max(1, true);
   auto max_index = std::get<1>(max_result).item<float>();
