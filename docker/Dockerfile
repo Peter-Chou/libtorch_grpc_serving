@@ -70,5 +70,5 @@ RUN mkdir /models && \
     protoc -I ./protos --cpp_out=./protos ./protos/example.proto && \
     python -m grpc_tools.protoc -I./protos --python_out=./python --grpc_python_out=./python ./protos/example.proto && \
     mkdir build && cd build && cmake -DCMAKE_PREFIX_PATH=/opt/libtorch .. && make -j $(nproc) && \
-    chmod +x /models/libtorch_grpc_serving/build/bin/resnet_server && \
+    # chmod +x /models/libtorch_grpc_serving/build/bin/resnet_server && \
     ./models/libtorch_grpc_serving/build/bin/resnet_server &
