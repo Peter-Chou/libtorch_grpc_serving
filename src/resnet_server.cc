@@ -26,7 +26,7 @@ class ResNetServiceImpl : public ResNet::Service {
       temp.push_back(image->image_matrix(i)); 
     }
     auto classify_result = resnet.classify(temp);
-    res->set_result(classify_result);
+    res->set_category(classify_result);
     return Status::OK;
   }
 };
