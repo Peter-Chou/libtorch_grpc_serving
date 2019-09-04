@@ -141,7 +141,7 @@ make -j $(nproc)
 
 ### Client request from server
 
-```
+```sh
 # in libtorch_grpc_demo root dir
 python3 python/resnet_client.py  # image category: 15
 ```
