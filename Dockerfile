@@ -5,9 +5,9 @@ RUN apt-get update && apt-get install -y \
 	cmake \
 	git \
 	curl \
-    wget \
-    zip \
-    unzip \
+        wget \
+        zip \
+        unzip \
 	vim \
 	tree \
 	autoconf \
