@@ -15,7 +15,7 @@ cd docker
 [sudo] sudo docker run -p 50051:50051 --name=resnet_service -d -it resnet-libtorch-serving /bin/bash -c './resnet_server'
 ```
 
-Now you can create a client and send a request to the resnet service
+Now you can create a client and send a request to the resnet service, here I use python client to do the demonstration.
 
 ```sh
 # in project root dir
