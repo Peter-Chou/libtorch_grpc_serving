@@ -20,7 +20,7 @@ Now you can create a client and send a request to the resnet service, here I use
 ```sh
 # in project root dir
 cd python
-# make sure your python environment has installed grpcio-tools
+# make sure grpcio-tools has installed in your python environment
 python -m grpc_tools.protoc -I../protos --python_out=. --grpc_python_out=. ../protos/example.proto
 python resnet_client.py  # image category: image_category_num
 ```
