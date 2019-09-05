@@ -2,9 +2,32 @@
 
 this project shows how to deploy a resnet libtorch model using gRPC.
 
-## Build gRPC
+## 1. serving with docker
 
-Since there is no prebuilt gRPC package in C++, it must be compiled and installed from source.
+The easiest and most reliable way to deploy the resnet libtorch model is to use docker, make sure you have already install docker and run the following command.
+
+```sh
+# in project root dir
+cd docker
+# build the image from Dockerfile
+[sudo] docker build --pull -t resnet-libtorch-serving -f libtorch_cpu_Dockerfile .
+# create docker container and provide service
+[sudo] sudo docker run -p 50051:50051 --name=resnet_service -d -it resnet-libtorch-serving /bin/bash -c './resnet_server'
+```
+
+Now you can create a client and send a request to the resnet service
+
+```sh
+# in project root dir
+cd python
+# make sure your python environment has installed grpcio-tools
+python -m grpc_tools.protoc -I../protos --python_out=. --grpc_python_out=. ../protos/example.proto
+python resnet_client.py  # image category: image_category_num
+```
+
+## 2. serving without docker
+
+If you want to get all things without docker, You need to follow the instructions below. Since there is no prebuilt gRPC package in C++, it must be compiled and installed from source.
 
 ### install prerequisites
 
@@ -33,6 +56,16 @@ git clone -b v1.23.0 https://github.com/grpc/grpc.git
 cd grpc
 git submodule update --init
 ```
+
+The build process is a bit tricky, If you follow the build instructions given by the grpc's readme, it won't automatically generate *targets.cmake files which is useful when you use cmake to link grpc into your project and you will receive the error:
+
+```
+include could not find load file:
+
+  /usr/local/lib/cmake/grpc/gRPCTargets.cmake
+```
+
+The current workaround is to build zlib, cares, protobuf at first, then tell cmake to use these installed packages when build grpc, and grpc will generate all the files as expected.
 
 ### install zlib
 
@@ -143,7 +176,7 @@ make -j $(nproc)
 
 ```sh
 # in libtorch_grpc_demo root dir
-python3 python/resnet_client.py  # image category: 15
+python3 python/resnet_client.py  # image category: image_category_num
 ```
 
 
