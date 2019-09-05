@@ -1,4 +1,7 @@
+# docker build --pull -t resnet-libtorch-serving -f libtorch_cpu_Dockerfile .
 FROM ubuntu:18.04
+
+MAINTAINER Peter-Chou <2747244153@qq.com>
 
 # use aliyun mirror
 RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.aliyun\.com\/ubuntu\//g' /etc/apt/sources.list
