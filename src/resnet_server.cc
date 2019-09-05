@@ -16,7 +16,8 @@ using example::ImageMatrix;
 using example::ClassifyResult;
 using example::ResNet;
 
-ResNetModule resnet(std::string("../traced_resnet_model.pt"));
+// ResNetModule resnet(std::string("../traced_resnet_model.pt"));
+ResNetModule resnet(RESNETSAVEPATH);
 
 class ResNetServiceImpl : public ResNet::Service {
   Status ClassifyImage (ServerContext* context, const ImageMatrix* image,
