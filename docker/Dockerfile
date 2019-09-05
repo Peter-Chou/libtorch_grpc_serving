@@ -65,15 +65,12 @@ RUN cd /opt && \
     rm -rf libtorch-cxx11-abi-shared-with-deps-1.2.0.zip
 
 # build resnet_server
-# RUN mkdir /models && cd /models
-#WORKDIR /opt/libtorch_grpc_serving
-RUN git clone https://github.com/Peter-Chou/libtorch_grpc_serving.git /opt/libtorch_grpc_serving
-#RUN cd /opt/libtorch_grpc_serving
-WORKDIR /opt/libtorch_grpc_serving
-RUN python get_resnet_libtorch_save.py
-RUN protoc -I ./protos --grpc_out=./protos --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/example.proto
-RUN protoc -I ./protos --cpp_out=./protos ./protos/example.proto
-RUN python -m grpc_tools.protoc -I./protos --python_out=./python --grpc_python_out=./python ./protos/example.proto
-RUN mkdir build && cd build && cmake -DCMAKE_PREFIX_PATH=/opt/libtorch .. && make -j $(nproc)
-RUN cd /libtorch_grpc_serving/build/bin && \
-    nohup ./resnet_server &
+RUN mkdir -p /pytorch_models/resnet
+WORKDIR /pytorch_models/resnet
+RUN git clone https://github.com/Peter-Chou/libtorch_grpc_serving.git . && \
+    python get_resnet_libtorch_save.py && \
+    protoc -I ./protos --grpc_out=./protos --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./protos/example.proto && \
+    protoc -I ./protos --cpp_out=./protos ./protos/example.proto && \
+    python -m grpc_tools.protoc -I./protos --python_out=./python --grpc_python_out=./python ./protos/example.proto && \
+    mkdir build && cd build && cmake -DCMAKE_PREFIX_PATH=/opt/libtorch .. && make -j $(nproc)
+WORKDIR /pytorch_models/resnet/build/bin
