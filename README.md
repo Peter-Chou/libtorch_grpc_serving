@@ -4,7 +4,7 @@ this project shows how to deploy a resnet libtorch model using gRPC.
 
 ## 1. serving with docker
 
-The easiest and most reliable way to deploy the resnet libtorch model is to use docker, make sure you have already install docker and run the following command.
+The easiest and most reliable way to deploy the resnet libtorch model is to use docker, make sure you have already install docker and run the following commands.
 
 ```sh
 # in project root dir
@@ -27,11 +27,11 @@ python resnet_client.py  # image category: image_category_num
 
 ## 2. serving without docker
 
-If you want to get all things without docker, You need to follow the instructions below. Since there is no prebuilt gRPC package in C++, it must be compiled and installed from source.
+If you want to get all things without docker, You need to follow the instructions below. Since there is no prebuilt gRPC package in C++, it must be compiled and installed from source code.
 
 ### install prerequisites
 
-- necessary package
+- necessary packages
 ```sh
 sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install build-essential autoconf libtool pkg-config libgflags-dev libgtest-dev clang libc++-dev libssl-dev cmake python3-distutils vim tree git curl
@@ -65,7 +65,7 @@ include could not find load file:
   /usr/local/lib/cmake/grpc/gRPCTargets.cmake
 ```
 
-The current workaround is to build zlib, cares, protobuf at first, then tell cmake to use these installed packages when build grpc, and grpc will generate all the files as expected.
+The current workaround is to build zlib, cares, protobuf at first, then tell cmake to use these installed packages when building grpc, then grpc will generate all the files as expected.
 
 ### install zlib
 
@@ -116,7 +116,7 @@ unzip libtorch*.zip
 
 ## build resnet model service
 
-### generate resnet libtorch checkpoint from pytorch
+### generate resnet libtorch saved file from pytorch
 
 ```sh
 curl -O https://bootstrap.pypa.io/get-pip.py
@@ -127,19 +127,17 @@ pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 sudo pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-
-
 ```sh
-cd libtorch_grpc_demo
+cd libtorch_grpc_serving
 python3 get_resnet_libtorch_save.py
 ```
 
-### generate protoc side code
+### generate code using protoc
 
 - generate C++ server side code
 
 ```sh
-# in libtorch_grpc_demo root dir
+# in libtorch_grpc_serving root dir
 PROTO_SRC_DIR=./protos
 ## generate C++ server side code
 protoc -I $PROTO_SRC_DIR --grpc_out=./protos --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` $PROTO_SRC_DIR/example.proto
@@ -151,7 +149,7 @@ protoc -I $PROTO_SRC_DIR --cpp_out=./protos $PROTO_SRC_DIR/example.proto
 - generate python client side code
 
 ```sh
-# in libtorch_grpc_demo root dir
+# in libtorch_grpc_serving root dir
 sudo pip install grpcio-tools
 python3 -m grpc_tools.protoc -I$PROTO_SRC_DIR --python_out=./python --grpc_python_out=./python $PROTO_SRC_DIR/example.proto
 ```
@@ -159,7 +157,7 @@ python3 -m grpc_tools.protoc -I$PROTO_SRC_DIR --python_out=./python --grpc_pytho
 ### build the project
 
 ```sh
-# in libtorch_grpc_demo root dir
+# in libtorch_grpc_serving root dir
 mkdir build && cd build
 cmake -DCMAKE_PREFIX_PATH=$HOME/libtorch ..
 make -j $(nproc)
@@ -168,14 +166,14 @@ make -j $(nproc)
 ### start resnet server
 
 ```sh
-# in libtorch_grpc_demo root dir
+# in libtorch_grpc_serving root dir
 ./build/bin/resnet_server &  # Server listening on 0.0.0.0:50051
 ```
 
 ### Client request from server
 
 ```sh
-# in libtorch_grpc_demo root dir
+# in libtorch_grpc_serving root dir
 python3 python/resnet_client.py  # image category: image_category_num
 ```
 
