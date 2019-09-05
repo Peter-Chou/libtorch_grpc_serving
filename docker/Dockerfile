@@ -1,5 +1,8 @@
 FROM ubuntu:18.04
 
+# use aliyun mirror
+RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.aliyun\.com\/ubuntu\//g' /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y \
 	build-essential \
 	cmake \
@@ -20,16 +23,18 @@ RUN apt-get update && apt-get install -y \
 	libssl-dev \
 	python3-distutils
 
-RUN ln -s /usr/bin/python3.6 /usr/bin/python
+RUN ln -sf /usr/bin/python3.6 /usr/bin/python
 
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python get-pip.py && \
     rm get-pip.py
 
-# use tsing hua mirror
-RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/
+# use tencent pypi mirror
+RUN pip config set global.index-url https://mirrors.cloud.tencent.com/pypi/simple
 
-RUN pip install grpcio-tools==1.23.0 torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
+RUN pip install grpcio-tools==1.23.0
+RUN pip install  torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
 # Install golang
 RUN cd /tmp && \
