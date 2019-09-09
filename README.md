@@ -2,7 +2,7 @@
 
 this project shows how to deploy a resnet libtorch model using gRPC.
 
-## 1. serving with docker
+## 1. Serving with docker
 
 The easiest and most reliable way to deploy the resnet libtorch model is to use docker, make sure you have already install docker and run the following commands.
 
@@ -15,7 +15,7 @@ cd docker
 [sudo] sudo docker run -p 50051:50051 --name=resnet_service -d -it resnet-libtorch-serving /bin/bash -c './resnet_server'
 ```
 
-Now you can create a client and send a request to the resnet service, here I use python client to do the demonstration.
+Now you can create a client and send a request to the resnet server, here I use the python client to do the demonstration.
 
 ```sh
 # in project root dir
@@ -25,11 +25,15 @@ python -m grpc_tools.protoc -I../protos --python_out=. --grpc_python_out=. ../pr
 python resnet_client.py  # image category: image_category_num
 ```
 
-## 2. serving without docker
+## 2. Serving without docker
 
-If you want to get all things without docker, You need to follow the instructions below. Since there is no prebuilt gRPC package in C++, it must be compiled and installed from source code.
+If you want to get all the things without docker, You need to follow the instructions below. 
 
-### install prerequisites
+Since there is no prebuilt gRPC package in C++, it must be compiled and installed from the source code.
+
+### Compile and install gRPC
+
+#### Install prerequisites
 
 - necessary packages
 ```sh
@@ -67,7 +71,7 @@ include could not find load file:
 
 The current workaround is to build zlib, cares, protobuf at first, then tell cmake to use these installed packages when building grpc, then grpc will generate all the files as expected.
 
-### install zlib
+#### Install zlib
 
 ```sh
 GPRC_COMPILE_ROOT_PATH=$(pwd)
@@ -78,7 +82,7 @@ make -j $(nproc)
 sudo make install
 ```
 
-### install cares
+#### Install cares
 ```sh
 cd $GPRC_COMPILE_ROOT_PATH/third_party/cares/cares
 mkdir build && cd build
@@ -87,7 +91,7 @@ make -j $(nproc)
 sudo make install
 ```
 
-### install protobuf
+#### Install protobuf
 ```sh
 cd $GPRC_COMPILE_ROOT_PATH/third_party/protobuf/cmake
 mkdir build && cd build
@@ -96,7 +100,7 @@ make -j $(nproc)
 sudo make install
 ```
 
-## install gRPC
+#### Install gRPC
 ```sh
 cd $GPRC_COMPILE_ROOT_PATH
 mkdir build && cd build
@@ -106,7 +110,7 @@ sudo make install
 sudo ldconfig
 ```
 
-## Install libtorch library
+### Install libtorch library
 
 ```sh
 cd $HOME
@@ -114,25 +118,26 @@ wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-de
 unzip libtorch*.zip
 ```
 
-## build resnet model service
+### Build gRPC server of resnet libtorch model 
 
-### generate resnet libtorch saved file from pytorch
+#### Generate resnet libtorch saved file from pytorch
 
 ```sh
 curl -O https://bootstrap.pypa.io/get-pip.py
 # ubuntu 18.04 python3.6.8
 sudo python3 get-pip.py
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-# sudo apt-get install python3-pip
+# install pytorch package
 sudo pip install torch==1.2.0+cpu torchvision==0.4.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 ```sh
+git clone https://github.com/Peter-Chou/libtorch_grpc_serving.git
 cd libtorch_grpc_serving
 python3 get_resnet_libtorch_save.py
 ```
 
-### generate code using protoc
+#### Generate server structure code by protoc
 
 - generate C++ server side code
 
@@ -142,7 +147,7 @@ PROTO_SRC_DIR=./protos
 ## generate C++ server side code
 protoc -I $PROTO_SRC_DIR --grpc_out=./protos --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` $PROTO_SRC_DIR/example.proto
 ## generate C++ message classes needed by server
-protoc -I $PROTO_SRC_DIR --cpp_out=./protos $PROTO_SRC_DIR/example.proto  
+protoc -I $PROTO_SRC_DIR --cpp_out=./protos $PROTO_SRC_DIR/example.proto 
 
 ```
 
@@ -154,7 +159,7 @@ sudo pip install grpcio-tools
 python3 -m grpc_tools.protoc -I$PROTO_SRC_DIR --python_out=./python --grpc_python_out=./python $PROTO_SRC_DIR/example.proto
 ```
 
-### build the project
+#### Build the project
 
 ```sh
 # in libtorch_grpc_serving root dir
@@ -163,33 +168,16 @@ cmake -DCMAKE_PREFIX_PATH=$HOME/libtorch ..
 make -j $(nproc)
 ```
 
-### start resnet server
+#### Start resnet server
 
 ```sh
 # in libtorch_grpc_serving root dir
 ./build/bin/resnet_server &  # Server listening on 0.0.0.0:50051
 ```
 
-### Client request from server
+#### Client request from server
 
 ```sh
 # in libtorch_grpc_serving root dir
 python3 python/resnet_client.py  # image category: image_category_num
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
