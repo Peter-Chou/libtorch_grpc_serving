@@ -16,7 +16,6 @@ using example::ImageMatrix;
 using example::ClassifyResult;
 using example::ResNet;
 
-// ResNetModule resnet(std::string("../traced_resnet_model.pt"));
 ResNetModule resnet(RESNETSAVEPATH);
 
 class ResNetServiceImpl : public ResNet::Service {
@@ -53,12 +52,6 @@ void RunServer() {
 
 
 int main(int argc, const char* argv[]) {
-  // Deserialize the ScriptModule from a file using torch::jit::load().
-  // module = torch::jit::load("/home/peter/pytorch_libtorch/traced_resnet_model.pt");
-
-  // assert(module != nullptr);
-  // std::cout << "ok\n";
-
   RunServer();
   return 0;
 }
